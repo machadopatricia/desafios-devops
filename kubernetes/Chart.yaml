@@ -1,0 +1,9 @@
+apiVersion: v2
+name: idapp
+version: 1.0.0
+description: Chart Desafio 02 - Kubernetes
+type: application
+home: https://gitlab.com/sympla/devops/charts/microservice
+maintainers:
+  - name: Patricia
+    email: patsouzam@gmail.com

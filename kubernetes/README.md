@@ -1,32 +1,24 @@
-# Desafio 02: Kubernetes
+# Desafio 02 - Kubernetes
+Ver [Kubernetes](https://github.com/idwall/desafios-devops/tree/master/kubernetes)
 
-## Motivação
+## Como utilizar a solução
+- A [imagem] (https://hub.docker.com/repository/docker/machadopatricia/idapp/general) (pública) já consta no Dockerhub e nos values.yaml.
+- Os values estão preenchidos de forma em que nada precisa ser alterado, portanto, é necessário somente navegar até o diretório base (Kubernetes) e rodar:
+```
+kubectl apply -f .
+```
 
-Kubernetes atualmente é a principal ferramenta de orquestração e _deployment_ de _containers_ utilizado no mundo, práticamente tornando-se um padrão para abstração de recursos de infraestrutura. 
+- Na raiz do repositório, encontra-se o arquivo *deploy.sh*. Basta rodar esse script para que o namespace seja criado (padrao idapp) e os recursos dos manifestos sejam criados nele.
+```
+chmod +x .deploy.sh
+./deploy.sh
+```
 
-Na IDWall todos nossos serviços são containerizados e distribuídos em _clusters_ para cada ambiente, sendo assim é importante que as aplicações sejam adaptáveis para cada ambiente e haja controle via código dos recursos kubernetes através de seus manifestos. 
+- No entanto, como a aplicação deve ser acessada através de http://localhost:3000, pode-se fazer necessário o port-forwarding, pois o Service não disponibiliza essa porta como padrão. Quando estiver no contexto kubectl da aplicação idapp (caso o namespace se mantenha esse nos values), basta executar o comando abaixo:
+```
+kubectl port-forward service/idapp 3000:80 -n idapp
+```
 
-## Objetivo
-Dentro deste repositório existe um subdiretório **app** e um **Dockerfile** que constrói essa imagem, seu objetivo é:
+- Dessa forma, você vai conseguir acessar aplicação pelo navegador via http://localhost:3000
 
-- Construir a imagem docker da aplicação
-- Criar os manifestos de recursos kubernetes para rodar a aplicação (_deployments, services, ingresses, configmap_ e qualquer outro que você considere necessário)
-- Criar um _script_ para a execução do _deploy_ em uma única execução.
-- A aplicação deve ter seu _deploy_ realizado com uma única linha de comando em um cluster kubernetes **local**
-- Todos os _pods_ devem estar rodando
-- A aplicação deve responder à uma URL específica configurada no _ingress_
-
-
-## Extras 
-- Utilizar Helm [HELM](https://helm.sh)
-- Divisão de recursos por _namespaces_
-- Utilização de _health check_ na aplicação
-- Fazer com que a aplicação exiba seu nome ao invés de **"Olá, candidato!"**
-
-## Notas
-
-* Pode se utilizar o [Minikube](https://github.com/kubernetes/minikube) ou [Docker for Mac/Windows](https://docs.docker.com/docker-for-mac/) para execução do desafio e realização de testes.
-
-* A aplicação sobe por _default_ utilizando a porta **3000** e utiliza uma variável de ambiente **$NAME**
-
-* Não é necessário realizar o _upload_ da imagem Docker para um registro público, você pode construir a imagem localmente e utilizá-la diretamente.
+- A aplicação utiliza health checks, como liveness e readiness, que ajudam na disponibilidade. Os recursos se concentram todos no namespace *idapp* para uma melhor rastreabilidade e, consequentemente, melhor troubleshooting da aplicação.

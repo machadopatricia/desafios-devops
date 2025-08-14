@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Values.namespace }}"
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.namespace }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.namespace }}
+    spec:
+      containers:
+        - name: {{ .Values.namespace }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: "{{ .Values.namespace }}-cm"
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.container.livenessProbe.path }}
+              port: {{ .Values.container.livenessProbe.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.container.readinessProbe.path }}
+              port: {{ .Values.container.readinessProbe.port }}
+            initialDelaySeconds: 2
+            periodSeconds: 5

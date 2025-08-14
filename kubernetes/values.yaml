@@ -1,0 +1,28 @@
+namespace: idapp
+replicaCount: 1
+
+image:
+  repository: machadopatricia/idapp
+  tag: 0.0.1
+  pullPolicy: IfNotPresent
+
+container:
+  livenessProbe:
+    path: /health
+    port: 3000
+  readinessProbe:
+    path: /health
+    port: 3000
+
+service:
+  type: ClusterIP
+  port: 80
+  protocol: TCP
+
+ingress:
+  className: nginx
+  hosts:
+    - host: localhost
+      paths:
+        - path: /
+          pathType: Prefix

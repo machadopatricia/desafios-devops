@@ -9,13 +9,25 @@ variable "ec2_name" {
   default     = "ec2-test"
 }
 
-variable "ec2_ssh_port_cidr" {
-  description = "IP ou range necessário para a liberação da porta SSH (obrigatório)"
-  type        = string
-}
-
 variable "tags" {
   description = "Tags a serem adicionadas ao recurso"
   type        = map(string)
   default     = {}
+}
+
+variable "ssh_port_cidr" {
+  description = "IP ou range necessário para a liberação da porta SSH (obrigatório)"
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "ID da VPC que o SG vai usar"
+  default = ""
+  type        = string
+}
+
+variable "subnet_id" {
+  description = "ID da subnet que a EC2 vai estar"
+  default = ""
+  type        = string
 }
